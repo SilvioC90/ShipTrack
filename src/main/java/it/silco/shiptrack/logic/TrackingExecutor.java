@@ -6,8 +6,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -49,9 +51,8 @@ public class TrackingExecutor {
 		TrackingResultData result = new TrackingResultData();
 		result.setCompany("MAERSK");
 		result.setTrackId(trackId);
-		String fromCity = "-", toCity = "-", arrivalDate = "-";
-
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		String fromCity = "-", toCity = "-";
+		Date arrivalDate = new Date(0);
 
 		try {
 			URL url = new URL(MAERSK_URL + trackId + "?operator=MAEU");
@@ -86,9 +87,9 @@ public class TrackingExecutor {
 				}
 			}
 			if (maerskJson.getContainers().get(0) != null) {
-				arrivalDate = sdf.format(maerskJson.getContainers().get(0).getEta_final_delivery());
-				if (arrivalDate == null || arrivalDate.isBlank()) {
-					arrivalDate = "-";
+				arrivalDate = maerskJson.getContainers().get(0).getEta_final_delivery();
+				if (arrivalDate == null) {
+					arrivalDate = new Date(0);
 				}
 			}
 
@@ -97,10 +98,10 @@ public class TrackingExecutor {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 		result.setFromCity(fromCity);
 		result.setToCity(toCity);
 		result.setArrivalDate(arrivalDate);
-
 		return result;
 	}
 
@@ -108,7 +109,11 @@ public class TrackingExecutor {
 		TrackingResultData result = new TrackingResultData();
 		result.setCompany("MSC");
 		result.setTrackId(trackId);
-		String fromCity = "-", toCity = "-", arrivalDate = "-";
+		String fromCity = "-", toCity = "-";
+		Date arrivalDate = new Date(0);
+		String dateAsString = "";
+
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 		try {
 			URL url = new URL(MSC_URL);
@@ -155,9 +160,10 @@ public class TrackingExecutor {
 								toCity = "-";
 							}
 
-							arrivalDate = gti.getFinalPodEtaDate();
-							if (arrivalDate == null || arrivalDate.isBlank()) {
-								arrivalDate = "-";
+							dateAsString = gti.getFinalPodEtaDate();
+							arrivalDate = sdf.parse(dateAsString);
+							if (arrivalDate == null) {
+								arrivalDate = new Date(0);
 							}
 						}
 					} else {
@@ -169,6 +175,8 @@ public class TrackingExecutor {
 			}
 		} catch (FileNotFoundException e) {
 			logger.warn("TrackID non trovato: " + trackId);
+		} catch (ParseException e) {
+			logger.error("Formato della data non valido: " + dateAsString);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

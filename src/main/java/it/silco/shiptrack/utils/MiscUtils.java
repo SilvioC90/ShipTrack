@@ -8,7 +8,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -35,6 +38,8 @@ public class MiscUtils {
 
 	public final static Font FONT = new Font("Arial", Font.PLAIN, 16);
 	public final static Font FONT_BOLD = new Font("Arial", Font.BOLD, 16);
+
+	public final static DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss");
 
 	public static String getWorkDir() {
 		return System.getProperty("user.home") + File.separator + "." + APP_NAME + File.separator;
@@ -133,6 +138,8 @@ public class MiscUtils {
 		table.setDefaultRenderer(String.class, new SelectedCellHighlightRenderer());
 		table.setDefaultRenderer(Float.class, new SelectedCellHighlightRenderer());
 		table.setDefaultRenderer(Integer.class, new SelectedCellHighlightRenderer());
+//		table.setDefaultRenderer(Date.class, new DateCellRenderer());
+		table.setDefaultRenderer(Date.class, new SelectedCellHighlightRenderer());
 
 		return table;
 	}

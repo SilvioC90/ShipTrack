@@ -1,6 +1,7 @@
 package it.silco.shiptrack.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -25,7 +26,7 @@ public class TrackingResultTableModel extends AbstractTableModel {
 		this.data = data;
 		this.columnNames = new String[] { l.getProperty("track_id"), l.getProperty("company"), l.getProperty("from_city"), l.getProperty("to_city"),
 				l.getProperty("arrival_date") };
-		this.columnClass = new Class<?>[] { String.class, String.class, String.class, String.class, String.class };
+		this.columnClass = new Class<?>[] { String.class, String.class, String.class, String.class, Date.class };
 
 		logger.debug("Tracking result table model created.");
 	}
@@ -81,8 +82,8 @@ public class TrackingResultTableModel extends AbstractTableModel {
 			row.setToCity((String) aValue);
 			data.get(rowIndex).setToCity((String) aValue);
 		} else if (4 == columnIndex) {
-			row.setArrivalDate((String) aValue);
-			data.get(rowIndex).setArrivalDate((String) aValue);
+			row.setArrivalDate((Date) aValue);
+			data.get(rowIndex).setArrivalDate((Date) aValue);
 		}
 	}
 

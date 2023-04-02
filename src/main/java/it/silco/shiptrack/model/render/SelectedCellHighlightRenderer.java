@@ -2,15 +2,31 @@ package it.silco.shiptrack.model.render;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.text.DateFormat;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import it.silco.shiptrack.utils.MiscUtils;
+
 public class SelectedCellHighlightRenderer extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 1L;
 	public static final DefaultTableCellRenderer DEFAULT_RENDERER = new DefaultTableCellRenderer();
+	private DateFormat formatter = MiscUtils.DATE_FORMAT;
 
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+
+		if (column == 4) {
+			if (formatter == null) {
+				formatter = DateFormat.getDateInstance();
+			}
+			if (value == null) {
+				value = "-";
+			} else {
+				String date = formatter.format(value);
+				value = date;
+			}
+		}
 		Component cellRenderer = DEFAULT_RENDERER.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
 		if (column < table.getModel().getColumnCount()) {
@@ -52,6 +68,7 @@ public class SelectedCellHighlightRenderer extends DefaultTableCellRenderer {
 				}
 			}
 		}
+
 		return cellRenderer;
 	}
 

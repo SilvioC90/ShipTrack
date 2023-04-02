@@ -1,11 +1,13 @@
 package it.silco.shiptrack.data;
 
+import java.util.Date;
+
 public class TrackingResultData {
 	private String trackId;
 	private String company;
 	private String fromCity;
 	private String toCity;
-	private String arrivalDate;
+	private Date arrivalDate;
 
 	public String getTrackId() {
 		return trackId;
@@ -39,11 +41,11 @@ public class TrackingResultData {
 		this.toCity = toCity;
 	}
 
-	public String getArrivalDate() {
+	public Date getArrivalDate() {
 		return arrivalDate;
 	}
 
-	public void setArrivalDate(String arrivalDate) {
+	public void setArrivalDate(Date arrivalDate) {
 		this.arrivalDate = arrivalDate;
 	}
 }
