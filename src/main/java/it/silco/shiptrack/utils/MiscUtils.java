@@ -54,12 +54,23 @@ public class MiscUtils {
 
 	public static void resizeColumnWidth(JTable table, int minWidth) {
 		final TableColumnModel columnModel = table.getColumnModel();
+		Class<?> currentClass;
 		for (int column = 0; column < table.getColumnCount(); column++) {
 			int width = minWidth;
-			for (int row = 0; row < table.getRowCount(); row++) {
-				TableCellRenderer renderer = table.getCellRenderer(row, column);
-				Component comp = table.prepareRenderer(renderer, row, column);
-				width = Math.max(comp.getPreferredSize().width + 1, width);
+			currentClass = table.getModel().getColumnClass(column);
+			// Se la colonna è di tipo boolean non deve essere ridimensionata
+			if (currentClass.equals(Boolean.class)) {
+				for (int row = 0; row < table.getRowCount(); row++) {
+					TableCellRenderer renderer = table.getCellRenderer(row, column);
+					Component comp = table.prepareRenderer(renderer, row, column);
+					width = Math.max(comp.getPreferredSize().width + 1, 70);
+				}
+			} else {
+				for (int row = 0; row < table.getRowCount(); row++) {
+					TableCellRenderer renderer = table.getCellRenderer(row, column);
+					Component comp = table.prepareRenderer(renderer, row, column);
+					width = Math.max(comp.getPreferredSize().width + 1, width);
+				}
 			}
 			if (width > 300) {
 				width = 300;

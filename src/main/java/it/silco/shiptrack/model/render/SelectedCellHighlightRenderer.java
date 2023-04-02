@@ -67,12 +67,12 @@ public class SelectedCellHighlightRenderer extends DefaultTableCellRenderer {
 
 	private void blockedDefaultCellStyle(Component c) {
 		c.setForeground(Color.BLACK);
-		c.setBackground(new Color(255, 255, 255));
+		c.setBackground(new Color(235, 235, 235));
 	}
 
 	private void blockedAlternateCellStyle(Component c) {
 		c.setForeground(Color.BLACK);
-		c.setBackground(new Color(220, 240, 255));
+		c.setBackground(new Color(215, 235, 250));
 	}
 
 	private void selectedCellStyle(Component c) {
@@ -82,7 +82,7 @@ public class SelectedCellHighlightRenderer extends DefaultTableCellRenderer {
 
 	private void selectedBlockedCellStyle(Component c) {
 		c.setForeground(Color.BLACK);
-		c.setBackground(new Color(192, 237, 173));
+		c.setBackground(new Color(182, 227, 163));
 	}
 
 	private void selectedRowCellStyle(Component c) {

@@ -45,14 +45,14 @@ public class InputDataCsv {
 				} else {
 					currentElement = new InputData();
 					lineElements = line.split(",");
-					int j = 0;
+					int j = 1;
 					for (String element : lineElements) {
-						if (0 == j) {
+						if (1 == j) {
 							currentElement.setId(element);
 							ids.add(Integer.parseInt(element));
-						} else if (1 == j) {
-							currentElement.setTrackId(element);
 						} else if (2 == j) {
+							currentElement.setTrackId(element);
+						} else if (3 == j) {
 							currentElement.setCompany(element);
 						}
 						j++;
@@ -69,29 +69,26 @@ public class InputDataCsv {
 		return readedCsvData;
 	}
 
-	public boolean writeCSVfile(InputDataTableModel tableModel, List<int[]> changes) {
+	public boolean writeCSVfile(InputDataTableModel tableModel, List<int[]> changes, List<String> deletedRows) {
 		boolean result = false;
-		InputData currentElement;
-		for (int[] change : changes) {
-			currentElement = readedCsvData.get(change[0]);
-			if (0 == change[1]) {
-				currentElement.setId((String) tableModel.getValueAt(change[0], change[1]));
-			} else if (1 == change[1]) {
-				currentElement.setTrackId((String) tableModel.getValueAt(change[0], change[1]));
-			} else if (2 == change[1]) {
-				currentElement.setCompany((String) tableModel.getValueAt(change[0], change[1]));
-			}
-		}
-
 		StringBuilder sb = new StringBuilder();
 		sb.append(header + "\n");
+
+		if (deletedRows == null) {
+			deletedRows = new ArrayList<String>();
+		}
+
 		for (InputData elem : readedCsvData) {
-			sb.append(elem.getId());
-			sb.append(",");
-			sb.append(elem.getTrackId());
-			sb.append(",");
-			sb.append(elem.getCompany());
-			sb.append("\n");
+			if (deletedRows.contains(elem.getId())) {
+				// non scrivo la riga (cancellata)
+			} else {
+				sb.append(elem.getId());
+				sb.append(",");
+				sb.append(elem.getTrackId());
+				sb.append(",");
+				sb.append(elem.getCompany());
+				sb.append("\n");
+			}
 		}
 
 		try {

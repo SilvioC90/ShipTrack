@@ -85,4 +85,9 @@ public class TrackingResultTableModel extends AbstractTableModel {
 			data.get(rowIndex).setArrivalDate((String) aValue);
 		}
 	}
+
+	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		return false;
+	}
 }

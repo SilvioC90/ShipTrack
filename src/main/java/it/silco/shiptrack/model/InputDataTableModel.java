@@ -1,7 +1,9 @@
 package it.silco.shiptrack.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Properties;
 
 import javax.swing.table.AbstractTableModel;
@@ -20,13 +22,15 @@ public class InputDataTableModel extends AbstractTableModel {
 	private final Class<?>[] columnClass;
 
 	private List<InputData> data = new ArrayList<InputData>();
-
+	private final List<Integer> notEditableIndexes;
 	private List<int[]> changes = new ArrayList<int[]>();
+	private List<String> selectedRows = new ArrayList<String>();
 
 	public InputDataTableModel(List<InputData> data, Properties l) {
 		this.data = data;
-		this.columnNames = new String[] { l.getProperty("id"), l.getProperty("track_id"), l.getProperty("company") };
-		this.columnClass = new Class<?>[] { String.class, String.class, String.class };
+		this.columnNames = new String[] { " ", l.getProperty("id"), l.getProperty("track_id"), l.getProperty("company") };
+		this.columnClass = new Class<?>[] { Boolean.class, String.class, String.class, String.class };
+		this.notEditableIndexes = Arrays.asList(1);
 
 		logger.debug("Input data table model created.");
 	}
@@ -43,10 +47,12 @@ public class InputDataTableModel extends AbstractTableModel {
 		Object value = null;
 		InputData row = data.get(rowIndex);
 		if (0 == columnIndex) {
-			value = row.getId();
+			value = row.getIsSelected();
 		} else if (1 == columnIndex) {
-			value = row.getCompany();
+			value = row.getId();
 		} else if (2 == columnIndex) {
+			value = row.getCompany();
+		} else if (3 == columnIndex) {
 			value = row.getTrackId();
 		}
 		return value;
@@ -63,25 +69,56 @@ public class InputDataTableModel extends AbstractTableModel {
 	}
 
 	@Override
-	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		boolean isEditable = true;
-		return isEditable;
-	}
-
-	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		changes.add(new int[] { rowIndex, columnIndex });
 		InputData row = data.get(rowIndex);
 		if (0 == columnIndex) {
+			row.setIsSelected((Boolean) aValue);
+			data.get(rowIndex).setIsSelected((Boolean) aValue);
+			if ((Boolean) aValue) {
+				selectedRows.add(row.getId());
+			} else {
+				if (selectedRows.contains(row.getId())) {
+					selectedRows.remove(row.getId());
+				}
+			}
+		} else if (1 == columnIndex) {
 			row.setId((String) aValue);
 			data.get(rowIndex).setId((String) aValue);
-		} else if (1 == columnIndex) {
+		} else if (2 == columnIndex) {
 			row.setCompany((String) aValue);
 			data.get(rowIndex).setCompany((String) aValue);
-		} else if (2 == columnIndex) {
+		} else if (3 == columnIndex) {
 			row.setTrackId((String) aValue);
 			data.get(rowIndex).setTrackId((String) aValue);
 		}
+	}
+
+	@Override
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		boolean isEditable = true;
+		if (notEditableIndexes.contains(columnIndex)) {
+			isEditable = false;
+		}
+		return isEditable;
+	}
+
+	public void removeRows(List<String> idsToRemove) {
+		int i = 0;
+		ListIterator<InputData> li = data.listIterator();
+		while (li.hasNext()) {
+			InputData id = li.next();
+			if (idsToRemove.contains(id.getId())) {
+				li.remove();
+				selectedRows.remove(id.getId());
+				fireTableRowsDeleted(i, i);
+				i++;
+			}
+		}
+	}
+
+	public List<String> getSelectedRows() {
+		return selectedRows;
 	}
 
 	public List<int[]> getChanges() {

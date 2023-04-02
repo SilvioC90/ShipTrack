@@ -75,22 +75,31 @@ public class TrackingExecutor {
 
 			if (maerskJson.getOrigin() != null) {
 				fromCity = MiscUtils.escapeCommas(maerskJson.getOrigin().getCity());
+				if (fromCity == null || fromCity.isBlank()) {
+					fromCity = "-";
+				}
 			}
 			if (maerskJson.getDestination() != null) {
 				toCity = MiscUtils.escapeCommas(maerskJson.getDestination().getCity());
+				if (toCity == null || toCity.isBlank()) {
+					toCity = "-";
+				}
 			}
 			if (maerskJson.getContainers().get(0) != null) {
 				arrivalDate = sdf.format(maerskJson.getContainers().get(0).getEta_final_delivery());
+				if (arrivalDate == null || arrivalDate.isBlank()) {
+					arrivalDate = "-";
+				}
 			}
 
-			result.setFromCity(fromCity);
-			result.setToCity(toCity);
-			result.setArrivalDate(arrivalDate);
 		} catch (FileNotFoundException e) {
 			logger.warn("TrackID non trovato: " + trackId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		result.setFromCity(fromCity);
+		result.setToCity(toCity);
+		result.setArrivalDate(arrivalDate);
 
 		return result;
 	}
@@ -135,9 +144,22 @@ public class TrackingExecutor {
 						MscJson mscJson = mapper.readValue(response.toString(), MscJson.class);
 						GeneralTrackingInfo gti = mscJson.getData().getBillOfLadings().get(0).getGeneralTrackingInfo();
 
-						fromCity = MiscUtils.escapeCommas(gti.getShippedFrom());
-						toCity = MiscUtils.escapeCommas(gti.getShippedTo());
-						arrivalDate = gti.getFinalPodEtaDate();
+						if (gti != null) {
+							fromCity = MiscUtils.escapeCommas(gti.getShippedFrom());
+							if (fromCity == null || fromCity.isBlank()) {
+								fromCity = "-";
+							}
+
+							toCity = MiscUtils.escapeCommas(gti.getShippedTo());
+							if (toCity == null || toCity.isBlank()) {
+								toCity = "-";
+							}
+
+							arrivalDate = gti.getFinalPodEtaDate();
+							if (arrivalDate == null || arrivalDate.isBlank()) {
+								arrivalDate = "-";
+							}
+						}
 					} else {
 						logger.warn("Track ID non trovato: " + trackId);
 					}
@@ -145,15 +167,14 @@ public class TrackingExecutor {
 					logger.warn("JSON di risposta malformato o corrotto.");
 				}
 			}
-
-			result.setFromCity(fromCity);
-			result.setToCity(toCity);
-			result.setArrivalDate(arrivalDate);
 		} catch (FileNotFoundException e) {
 			logger.warn("TrackID non trovato: " + trackId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		result.setFromCity(fromCity);
+		result.setToCity(toCity);
+		result.setArrivalDate(arrivalDate);
 
 		return result;
 	}

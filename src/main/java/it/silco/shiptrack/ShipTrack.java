@@ -56,8 +56,9 @@ public class ShipTrack extends JPanel {
 	private InputDataTableModel inputDataTableModel;
 	private TrackingResultTableModel trackingResultTableModel;
 
-	private JButton saveBtn;
 	private JButton addRowBtn;
+	private JButton deleteRowsBtn;
+	private JButton saveBtn;
 	private JButton trackBtn;
 	private JButton exportBtn;
 
@@ -81,6 +82,7 @@ public class ShipTrack extends JPanel {
 
 		inputDataTable = MiscUtils.buildTable();
 		trackingResultTable = MiscUtils.buildTable();
+		trackingResultTable.setAutoCreateRowSorter(true);
 
 		// main layout
 		tabbedPane = new JTabbedPane();
@@ -98,17 +100,6 @@ public class ShipTrack extends JPanel {
 
 		add(tabbedPane, BorderLayout.NORTH);
 
-		// save button
-		ActionListener saveBtnAL = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				List<int[]> dossierRegChanges = inputDataTableModel.getChanges();
-				saveCsvFile(dossierRegChanges);
-
-				logger.info("File saved!");
-			}
-		};
-		saveBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_save"), saveBtnAL);
-
 		// add new row button
 		ActionListener addRowBtnAL = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -118,10 +109,33 @@ public class ShipTrack extends JPanel {
 				inputDataTableModel.addRow(newRow);
 
 				List<int[]> dossierRegChanges = inputDataTableModel.getChanges();
-				saveCsvFile(dossierRegChanges);
+				saveCsvFile(dossierRegChanges, null);
 			}
 		};
 		addRowBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_add_row"), addRowBtnAL);
+
+		// save button
+		ActionListener saveBtnAL = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				List<int[]> dossierRegChanges = inputDataTableModel.getChanges();
+				saveCsvFile(dossierRegChanges, null);
+
+				logger.info("File saved!");
+			}
+		};
+		saveBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_save"), saveBtnAL);
+
+		// delete rows button
+		ActionListener deleteRowsBtnAL = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				List<String> rows = inputDataTableModel.getSelectedRows();
+				inputDataTableModel.removeRows(rows);
+
+				List<int[]> dossierRegChanges = inputDataTableModel.getChanges();
+				saveCsvFile(dossierRegChanges, rows);
+			}
+		};
+		deleteRowsBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_delete_rows"), deleteRowsBtnAL);
 
 		// track button
 		ActionListener trackBtnAL = new ActionListener() {
@@ -165,6 +179,7 @@ public class ShipTrack extends JPanel {
 
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.add(addRowBtn);
+		buttonsPanel.add(deleteRowsBtn);
 		buttonsPanel.add(saveBtn);
 		buttonsPanel.add(trackBtn);
 		buttonsPanel.add(exportBtn);
@@ -193,9 +208,9 @@ public class ShipTrack extends JPanel {
 	 * 
 	 * @param changes
 	 */
-	private void saveCsvFile(List<int[]> changes) {
+	private void saveCsvFile(List<int[]> changes, List<String> deletedRows) {
 		InputDataCsv inputDataCsv = InputDataCsv.getInstance();
-		inputDataCsv.writeCSVfile(inputDataTableModel, changes);
+		inputDataCsv.writeCSVfile(inputDataTableModel, changes, deletedRows);
 	}
 
 	private void loadInputDataCsv() {

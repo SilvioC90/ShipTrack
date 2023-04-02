@@ -1,6 +1,7 @@
 package it.silco.shiptrack.data;
 
 public class InputData {
+	private Boolean isSelected;
 	private String id;
 	private String trackId;
 	private String company;
@@ -12,12 +13,14 @@ public class InputData {
 		this.id = String.format("%04d", id);
 		this.trackId = "";
 		this.company = "";
+		this.isSelected = false;
 	}
 
 	public InputData(String id, String trackId, String company) {
 		this.id = id;
 		this.trackId = trackId;
 		this.company = company;
+		this.isSelected = false;
 	}
 
 	public String getTrackId() {
@@ -42,5 +45,13 @@ public class InputData {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Boolean getIsSelected() {
+		return isSelected;
+	}
+
+	public void setIsSelected(Boolean isSelected) {
+		this.isSelected = isSelected;
 	}
 }
