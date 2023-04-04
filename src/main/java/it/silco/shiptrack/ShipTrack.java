@@ -1,6 +1,5 @@
 package it.silco.shiptrack;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -11,6 +10,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -67,9 +67,8 @@ public class ShipTrack extends JPanel {
 	private List<InputData> data;
 
 	public ShipTrack() {
-		super(new BorderLayout(3, 3));
-
-		// BoxLayout box = new BoxLayout(this, BoxLayout.Y_AXIS);
+		super();
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -100,7 +99,17 @@ public class ShipTrack extends JPanel {
 		trackingResultScrollPane.setFont(MiscUtils.FONT_BOLD);
 		tabbedPane.add(trackingResultScrollPane, localizedLabels.getProperty("tracking_result"), 1);
 
-		add(tabbedPane, BorderLayout.NORTH);
+		add(tabbedPane);
+
+		// loader
+		JPanel loaderPanel = new JPanel();
+		loaderLabel = new JLabel(localizedLabels.getProperty("label_loading"), JLabel.CENTER);
+		loaderLabel.setVisible(false);
+		loaderLabel.setFont(MiscUtils.FONT_BOLD);
+		loaderPanel.add(loaderLabel);
+		loaderPanel.setPreferredSize(new Dimension(400, 30));
+		loaderPanel.setMaximumSize(loaderPanel.getPreferredSize());
+		add(loaderPanel);
 
 		// add new row button
 		ActionListener addRowBtnAL = new ActionListener() {
@@ -130,7 +139,8 @@ public class ShipTrack extends JPanel {
 		// delete rows button
 		ActionListener deleteRowsBtnAL = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				List<String> rows = inputDataTableModel.getSelectedRows();
+				List<Integer> rows = inputDataTableModel.getSelectedRows();
+				InputDataCsv.removeIds(rows);
 				inputDataTableModel.removeRows(rows);
 
 				List<int[]> dossierRegChanges = inputDataTableModel.getChanges();
@@ -187,20 +197,11 @@ public class ShipTrack extends JPanel {
 		buttonsPanel.add(exportBtn);
 		buttonsPanel.setLayout(new GridLayout());
 		buttonsPanel.setVisible(true);
-		buttonsPanel.setPreferredSize(new Dimension(400, 50));
+		buttonsPanel.setPreferredSize(new Dimension(800, 50));
 		buttonsPanel.setMaximumSize(buttonsPanel.getPreferredSize());
-		add(buttonsPanel, BorderLayout.SOUTH);
+		add(buttonsPanel);
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
-
-		// loader
-		JPanel loaderPanel = new JPanel();
-		loaderLabel = new JLabel(localizedLabels.getProperty("label_loading"), JLabel.CENTER);
-		loaderLabel.setVisible(false);
-		loaderPanel.add(loaderLabel);
-		loaderPanel.setPreferredSize(new Dimension(400, 30));
-		loaderPanel.setMaximumSize(loaderPanel.getPreferredSize());
-		add(loaderPanel, BorderLayout.CENTER);
 
 		InputDataCsv idc = InputDataCsv.getInstance();
 		File file = new File(settingsUtils.getSetting(SettingsKeys.WORK_DIRECTORY) + File.separator + MiscUtils.SOURCE_FILENAME);
@@ -213,7 +214,7 @@ public class ShipTrack extends JPanel {
 	 * 
 	 * @param changes
 	 */
-	private void saveCsvFile(List<int[]> changes, List<String> deletedRows) {
+	private void saveCsvFile(List<int[]> changes, List<Integer> deletedRows) {
 		InputDataCsv inputDataCsv = InputDataCsv.getInstance();
 		inputDataCsv.writeCSVfile(inputDataTableModel, changes, deletedRows);
 	}

@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -48,16 +50,16 @@ public class InputDataCsv {
 					int j = 1;
 					for (String element : lineElements) {
 						if (1 == j) {
-							currentElement.setId(element);
+							currentElement.setId(Integer.parseInt(element));
 							ids.add(Integer.parseInt(element));
 						} else if (2 == j) {
-							currentElement.setTrackId(element);
+							currentElement.setTrackId((String) element);
 						} else if (3 == j) {
-							currentElement.setCompany(element);
+							currentElement.setCompany((String) element);
 						} else if (4 == j) {
-							currentElement.setClient(element);
+							currentElement.setClient((String) element);
 						} else if (5 == j) {
-							currentElement.setProgNum(element);
+							currentElement.setProgNum((String) element);
 						}
 						j++;
 					}
@@ -70,16 +72,23 @@ public class InputDataCsv {
 		} catch (Exception e) {
 			logger.error("File not found:" + e.getMessage());
 		}
+
+		Collections.sort(readedCsvData, new Comparator<InputData>() {
+			public int compare(InputData o1, InputData o2) {
+				return o1.getId() - o2.getId();
+			}
+		});
+
 		return readedCsvData;
 	}
 
-	public boolean writeCSVfile(InputDataTableModel tableModel, List<int[]> changes, List<String> deletedRows) {
+	public boolean writeCSVfile(InputDataTableModel tableModel, List<int[]> changes, List<Integer> deletedRows) {
 		boolean result = false;
 		StringBuilder sb = new StringBuilder();
 		sb.append(header + "\n");
 
 		if (deletedRows == null) {
-			deletedRows = new ArrayList<String>();
+			deletedRows = new ArrayList<Integer>();
 		}
 
 		for (InputData elem : readedCsvData) {
@@ -116,8 +125,16 @@ public class InputDataCsv {
 		return ids;
 	}
 
-	public static void addId(int id) {
+	public static void addId(Integer id) {
 		ids.add(id);
+	}
+
+	public static void removeId(Integer id) {
+		ids.remove(id);
+	}
+
+	public static void removeIds(List<Integer> ids) {
+		InputDataCsv.ids.removeAll(ids);
 	}
 
 	public static InputDataCsv getInstance() {

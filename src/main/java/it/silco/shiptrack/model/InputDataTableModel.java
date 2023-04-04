@@ -24,12 +24,12 @@ public class InputDataTableModel extends AbstractTableModel {
 	private List<InputData> data = new ArrayList<InputData>();
 	private final List<Integer> notEditableIndexes;
 	private List<int[]> changes = new ArrayList<int[]>();
-	private List<String> selectedRows = new ArrayList<String>();
+	private List<Integer> selectedRows = new ArrayList<Integer>();
 
 	public InputDataTableModel(List<InputData> data, Properties l) {
 		this.data = data;
 		this.columnNames = new String[] { " ", l.getProperty("id"), l.getProperty("track_id"), l.getProperty("company"), l.getProperty("client"), l.getProperty("progNum") };
-		this.columnClass = new Class<?>[] { Boolean.class, String.class, String.class, String.class, String.class, String.class };
+		this.columnClass = new Class<?>[] { Boolean.class, Integer.class, String.class, String.class, String.class, String.class };
 		this.notEditableIndexes = Arrays.asList(1);
 
 		logger.debug("Input data table model created.");
@@ -87,8 +87,8 @@ public class InputDataTableModel extends AbstractTableModel {
 				}
 			}
 		} else if (1 == columnIndex) {
-			row.setId((String) aValue);
-			data.get(rowIndex).setId((String) aValue);
+			row.setId((Integer) aValue);
+			data.get(rowIndex).setId((Integer) aValue);
 		} else if (2 == columnIndex) {
 			row.setCompany((String) aValue);
 			data.get(rowIndex).setCompany((String) aValue);
@@ -113,7 +113,7 @@ public class InputDataTableModel extends AbstractTableModel {
 		return isEditable;
 	}
 
-	public void removeRows(List<String> idsToRemove) {
+	public void removeRows(List<Integer> idsToRemove) {
 		int i = 0;
 		ListIterator<InputData> li = data.listIterator();
 		while (li.hasNext()) {
@@ -127,7 +127,7 @@ public class InputDataTableModel extends AbstractTableModel {
 		}
 	}
 
-	public List<String> getSelectedRows() {
+	public List<Integer> getSelectedRows() {
 		return selectedRows;
 	}
 

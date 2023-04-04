@@ -138,7 +138,6 @@ public class MiscUtils {
 		table.setDefaultRenderer(String.class, new CellRenderer());
 		table.setDefaultRenderer(Float.class, new CellRenderer());
 		table.setDefaultRenderer(Integer.class, new CellRenderer());
-//		table.setDefaultRenderer(Date.class, new DateCellRenderer());
 		table.setDefaultRenderer(Date.class, new CellRenderer());
 
 		return table;
