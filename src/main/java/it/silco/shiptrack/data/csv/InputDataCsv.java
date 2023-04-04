@@ -17,7 +17,7 @@ public class InputDataCsv {
 	private Logger logger = LogManager.getLogger(this.getClass());
 
 	private List<InputData> readedCsvData;
-	private final static String DEFAULT_HEADER = "track_id,company";
+	private final static String DEFAULT_HEADER = "id,track_id,company,client,progNum";
 	private String header;
 	private String filePath;
 	private static List<Integer> ids;
@@ -54,6 +54,10 @@ public class InputDataCsv {
 							currentElement.setTrackId(element);
 						} else if (3 == j) {
 							currentElement.setCompany(element);
+						} else if (4 == j) {
+							currentElement.setClient(element);
+						} else if (5 == j) {
+							currentElement.setProgNum(element);
 						}
 						j++;
 					}
@@ -87,6 +91,10 @@ public class InputDataCsv {
 				sb.append(elem.getTrackId());
 				sb.append(",");
 				sb.append(elem.getCompany());
+				sb.append(",");
+				sb.append(elem.getClient());
+				sb.append(",");
+				sb.append(elem.getProgNum());
 				sb.append("\n");
 			}
 		}

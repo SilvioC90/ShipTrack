@@ -26,7 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import it.silco.shiptrack.data.csv.InputDataCsv;
-import it.silco.shiptrack.model.render.SelectedCellHighlightRenderer;
+import it.silco.shiptrack.model.render.CellRenderer;
 import it.silco.shiptrack.model.render.TableHeaderRenderer;
 
 public class MiscUtils {
@@ -132,14 +132,14 @@ public class MiscUtils {
 
 		// header
 		JTableHeader header = table.getTableHeader();
-		header.setDefaultRenderer(new TableHeaderRenderer(false));
+		header.setDefaultRenderer(new TableHeaderRenderer(table));
 
 		// cell selection hightlight renderer
-		table.setDefaultRenderer(String.class, new SelectedCellHighlightRenderer());
-		table.setDefaultRenderer(Float.class, new SelectedCellHighlightRenderer());
-		table.setDefaultRenderer(Integer.class, new SelectedCellHighlightRenderer());
+		table.setDefaultRenderer(String.class, new CellRenderer());
+		table.setDefaultRenderer(Float.class, new CellRenderer());
+		table.setDefaultRenderer(Integer.class, new CellRenderer());
 //		table.setDefaultRenderer(Date.class, new DateCellRenderer());
-		table.setDefaultRenderer(Date.class, new SelectedCellHighlightRenderer());
+		table.setDefaultRenderer(Date.class, new CellRenderer());
 
 		return table;
 	}

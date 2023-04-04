@@ -5,6 +5,8 @@ public class InputData {
 	private String id;
 	private String trackId;
 	private String company;
+	private String client;
+	private String progNum;
 
 	public InputData() {
 	}
@@ -53,5 +55,21 @@ public class InputData {
 
 	public void setIsSelected(Boolean isSelected) {
 		this.isSelected = isSelected;
+	}
+
+	public String getClient() {
+		return client;
+	}
+
+	public void setClient(String client) {
+		this.client = client;
+	}
+
+	public String getProgNum() {
+		return progNum;
+	}
+
+	public void setProgNum(String progNum) {
+		this.progNum = progNum;
 	}
 }

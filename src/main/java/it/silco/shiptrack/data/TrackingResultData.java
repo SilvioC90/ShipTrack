@@ -8,6 +8,8 @@ public class TrackingResultData {
 	private String fromCity;
 	private String toCity;
 	private Date arrivalDate;
+	private String client;
+	private String progNum;
 
 	public String getTrackId() {
 		return trackId;
@@ -47,5 +49,21 @@ public class TrackingResultData {
 
 	public void setArrivalDate(Date arrivalDate) {
 		this.arrivalDate = arrivalDate;
+	}
+
+	public String getClient() {
+		return client;
+	}
+
+	public void setClient(String client) {
+		this.client = client;
+	}
+
+	public String getProgNum() {
+		return progNum;
+	}
+
+	public void setProgNum(String progNum) {
+		this.progNum = progNum;
 	}
 }

@@ -28,8 +28,8 @@ public class InputDataTableModel extends AbstractTableModel {
 
 	public InputDataTableModel(List<InputData> data, Properties l) {
 		this.data = data;
-		this.columnNames = new String[] { " ", l.getProperty("id"), l.getProperty("track_id"), l.getProperty("company") };
-		this.columnClass = new Class<?>[] { Boolean.class, String.class, String.class, String.class };
+		this.columnNames = new String[] { " ", l.getProperty("id"), l.getProperty("track_id"), l.getProperty("company"), l.getProperty("client"), l.getProperty("progNum") };
+		this.columnClass = new Class<?>[] { Boolean.class, String.class, String.class, String.class, String.class, String.class };
 		this.notEditableIndexes = Arrays.asList(1);
 
 		logger.debug("Input data table model created.");
@@ -54,6 +54,10 @@ public class InputDataTableModel extends AbstractTableModel {
 			value = row.getCompany();
 		} else if (3 == columnIndex) {
 			value = row.getTrackId();
+		} else if (4 == columnIndex) {
+			value = row.getClient();
+		} else if (5 == columnIndex) {
+			value = row.getProgNum();
 		}
 		return value;
 	}
@@ -91,6 +95,12 @@ public class InputDataTableModel extends AbstractTableModel {
 		} else if (3 == columnIndex) {
 			row.setTrackId((String) aValue);
 			data.get(rowIndex).setTrackId((String) aValue);
+		} else if (4 == columnIndex) {
+			row.setClient((String) aValue);
+			data.get(rowIndex).setClient((String) aValue);
+		} else if (5 == columnIndex) {
+			row.setProgNum((String) aValue);
+			data.get(rowIndex).setProgNum((String) aValue);
 		}
 	}
 

@@ -69,6 +69,8 @@ public class ShipTrack extends JPanel {
 	public ShipTrack() {
 		super(new BorderLayout(3, 3));
 
+		// BoxLayout box = new BoxLayout(this, BoxLayout.Y_AXIS);
+
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception ex) {
@@ -185,6 +187,8 @@ public class ShipTrack extends JPanel {
 		buttonsPanel.add(exportBtn);
 		buttonsPanel.setLayout(new GridLayout());
 		buttonsPanel.setVisible(true);
+		buttonsPanel.setPreferredSize(new Dimension(400, 50));
+		buttonsPanel.setMaximumSize(buttonsPanel.getPreferredSize());
 		add(buttonsPanel, BorderLayout.SOUTH);
 
 		setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -194,7 +198,8 @@ public class ShipTrack extends JPanel {
 		loaderLabel = new JLabel(localizedLabels.getProperty("label_loading"), JLabel.CENTER);
 		loaderLabel.setVisible(false);
 		loaderPanel.add(loaderLabel);
-		loaderPanel.setPreferredSize(new Dimension(170, 30));
+		loaderPanel.setPreferredSize(new Dimension(400, 30));
+		loaderPanel.setMaximumSize(loaderPanel.getPreferredSize());
 		add(loaderPanel, BorderLayout.CENTER);
 
 		InputDataCsv idc = InputDataCsv.getInstance();
@@ -241,7 +246,7 @@ public class ShipTrack extends JPanel {
 		mainFrame.setContentPane(ordersManager);
 		mainFrame.pack();
 		mainFrame.setLocationRelativeTo(null);
-		// mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		mainFrame.setVisible(true);
 
 		mainFrame.addWindowListener(new WindowAdapter() {

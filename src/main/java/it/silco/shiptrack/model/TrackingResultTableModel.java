@@ -24,9 +24,9 @@ public class TrackingResultTableModel extends AbstractTableModel {
 
 	public TrackingResultTableModel(List<TrackingResultData> data, Properties l) {
 		this.data = data;
-		this.columnNames = new String[] { l.getProperty("track_id"), l.getProperty("company"), l.getProperty("from_city"), l.getProperty("to_city"),
-				l.getProperty("arrival_date") };
-		this.columnClass = new Class<?>[] { String.class, String.class, String.class, String.class, Date.class };
+		this.columnNames = new String[] { l.getProperty("track_id"), l.getProperty("company"), l.getProperty("from_city"), l.getProperty("to_city"), l.getProperty("arrival_date"),
+				l.getProperty("client"), l.getProperty("progNum") };
+		this.columnClass = new Class<?>[] { String.class, String.class, String.class, String.class, Date.class, String.class, String.class };
 
 		logger.debug("Tracking result table model created.");
 	}
@@ -52,6 +52,10 @@ public class TrackingResultTableModel extends AbstractTableModel {
 			value = row.getToCity();
 		} else if (4 == columnIndex) {
 			value = row.getArrivalDate();
+		} else if (5 == columnIndex) {
+			value = row.getClient();
+		} else if (6 == columnIndex) {
+			value = row.getProgNum();
 		}
 		return value;
 	}
@@ -84,6 +88,12 @@ public class TrackingResultTableModel extends AbstractTableModel {
 		} else if (4 == columnIndex) {
 			row.setArrivalDate((Date) aValue);
 			data.get(rowIndex).setArrivalDate((Date) aValue);
+		} else if (5 == columnIndex) {
+			row.setClient((String) aValue);
+			data.get(rowIndex).setClient((String) aValue);
+		} else if (6 == columnIndex) {
+			row.setProgNum((String) aValue);
+			data.get(rowIndex).setProgNum((String) aValue);
 		}
 	}
 

@@ -36,9 +36,9 @@ public class TrackingExecutor {
 
 		for (InputData entry : data) {
 			if (entry.getCompany().equalsIgnoreCase("MAERSK")) {
-				result.add(maerskTrack(entry.getTrackId()));
+				result.add(maerskTrack(entry));
 			} else if (entry.getCompany().equalsIgnoreCase("MSC")) {
-				result.add(mscTrack(entry.getTrackId()));
+				result.add(mscTrack(entry));
 			} else {
 				logger.warn("Compagnia non valida: " + entry.getCompany());
 			}
@@ -47,10 +47,16 @@ public class TrackingExecutor {
 		return result;
 	}
 
-	private static TrackingResultData maerskTrack(String trackId) {
+	private static TrackingResultData maerskTrack(InputData data) {
 		TrackingResultData result = new TrackingResultData();
+
+		String trackId = data.getTrackId();
+
 		result.setCompany("MAERSK");
 		result.setTrackId(trackId);
+		result.setClient(data.getClient());
+		result.setProgNum(data.getProgNum());
+
 		String fromCity = "-", toCity = "-";
 		Date arrivalDate = new Date(0);
 
@@ -105,10 +111,17 @@ public class TrackingExecutor {
 		return result;
 	}
 
-	private static TrackingResultData mscTrack(String trackId) {
+	private static TrackingResultData mscTrack(InputData data) {
 		TrackingResultData result = new TrackingResultData();
+
+		String trackId = data.getTrackId();
+
 		result.setCompany("MSC");
 		result.setTrackId(trackId);
+		result.setClient(trackId);
+		result.setClient(data.getClient());
+		result.setProgNum(data.getProgNum());
+
 		String fromCity = "-", toCity = "-";
 		Date arrivalDate = new Date(0);
 		String dateAsString = "";

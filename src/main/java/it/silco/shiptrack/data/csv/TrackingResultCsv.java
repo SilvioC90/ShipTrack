@@ -13,7 +13,7 @@ import it.silco.shiptrack.utils.MiscUtils;
 public class TrackingResultCsv {
 	private Logger logger = LogManager.getLogger(this.getClass());
 
-	private final static String DEFAULT_HEADER = "track_id,company,from_city,to_city,arrival_date";
+	private final static String DEFAULT_HEADER = "track_id,company,from_city,to_city,arrival_date,client,progNum";
 
 	private DateFormat formatter = MiscUtils.DATE_FORMAT;
 

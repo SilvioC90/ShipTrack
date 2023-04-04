@@ -7,27 +7,33 @@ import java.text.DateFormat;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import it.silco.shiptrack.model.TrackingResultTableModel;
 import it.silco.shiptrack.utils.MiscUtils;
 
-public class SelectedCellHighlightRenderer extends DefaultTableCellRenderer {
+public class CellRenderer extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 1L;
-	public static final DefaultTableCellRenderer DEFAULT_RENDERER = new DefaultTableCellRenderer();
+	private DefaultTableCellRenderer defaultRenderer = new DefaultTableCellRenderer();
 	private DateFormat formatter = MiscUtils.DATE_FORMAT;
 
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+	public CellRenderer() {
+		defaultRenderer.setHorizontalAlignment(CENTER);
+	}
 
-		if (column == 4) {
-			if (formatter == null) {
-				formatter = DateFormat.getDateInstance();
-			}
-			if (value == null) {
-				value = "-";
-			} else {
-				String date = formatter.format(value);
-				value = date;
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		if (table.getModel().getClass().equals(TrackingResultTableModel.class)) {
+			if (column == 4) {
+				if (formatter == null) {
+					formatter = DateFormat.getDateInstance();
+				}
+				if (value == null) {
+					value = "-";
+				} else {
+					String date = formatter.format(value);
+					value = date;
+				}
 			}
 		}
-		Component cellRenderer = DEFAULT_RENDERER.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		Component cellRenderer = defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
 		if (column < table.getModel().getColumnCount()) {
 			if (table.isCellSelected(row, column)) {
@@ -68,7 +74,6 @@ public class SelectedCellHighlightRenderer extends DefaultTableCellRenderer {
 				}
 			}
 		}
-
 		return cellRenderer;
 	}
 
