@@ -85,128 +85,132 @@ public class ShipTrack extends JPanel {
 		trackingResultTable = MiscUtils.buildTable();
 		trackingResultTable.setAutoCreateRowSorter(true);
 
-		// main layout
-		tabbedPane = new JTabbedPane();
-		tabbedPane.setBounds(50, 50, 200, 200);
-		tabbedPane.setFocusable(false);
-		tabbedPane.setFont(MiscUtils.FONT_BOLD);
+		if (MiscUtils.checkSerialKey()) {
+			// main layout
+			tabbedPane = new JTabbedPane();
+			tabbedPane.setBounds(50, 50, 200, 200);
+			tabbedPane.setFocusable(false);
+			tabbedPane.setFont(MiscUtils.FONT_BOLD);
 
-		JScrollPane inputTableScrollPane = new JScrollPane(inputDataTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		inputTableScrollPane.setFont(MiscUtils.FONT_BOLD);
-		tabbedPane.add(inputTableScrollPane, localizedLabels.getProperty("tracking_list"), 0);
+			JScrollPane inputTableScrollPane = new JScrollPane(inputDataTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			inputTableScrollPane.setFont(MiscUtils.FONT_BOLD);
+			tabbedPane.add(inputTableScrollPane, localizedLabels.getProperty("tracking_list"), 0);
 
-		JScrollPane trackingResultScrollPane = new JScrollPane(trackingResultTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		trackingResultScrollPane.setFont(MiscUtils.FONT_BOLD);
-		tabbedPane.add(trackingResultScrollPane, localizedLabels.getProperty("tracking_result"), 1);
+			JScrollPane trackingResultScrollPane = new JScrollPane(trackingResultTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			trackingResultScrollPane.setFont(MiscUtils.FONT_BOLD);
+			tabbedPane.add(trackingResultScrollPane, localizedLabels.getProperty("tracking_result"), 1);
 
-		add(tabbedPane);
+			add(tabbedPane);
 
-		// loader
-		JPanel loaderPanel = new JPanel();
-		loaderLabel = new JLabel(localizedLabels.getProperty("label_loading"), JLabel.CENTER);
-		loaderLabel.setVisible(false);
-		loaderLabel.setFont(MiscUtils.FONT_BOLD);
-		loaderPanel.add(loaderLabel);
-		loaderPanel.setPreferredSize(new Dimension(400, 30));
-		loaderPanel.setMaximumSize(loaderPanel.getPreferredSize());
-		add(loaderPanel);
+			// loader
+			JPanel loaderPanel = new JPanel();
+			loaderLabel = new JLabel(localizedLabels.getProperty("label_loading"), JLabel.CENTER);
+			loaderLabel.setVisible(false);
+			loaderLabel.setFont(MiscUtils.FONT_BOLD);
+			loaderPanel.add(loaderLabel);
+			loaderPanel.setPreferredSize(new Dimension(400, 30));
+			loaderPanel.setMaximumSize(loaderPanel.getPreferredSize());
+			add(loaderPanel);
 
-		// add new row button
-		ActionListener addRowBtnAL = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int nextId = MiscUtils.nextValidId(InputDataCsv.getIds());
-				InputData newRow = new InputData(nextId);
-				InputDataCsv.addId(nextId);
-				inputDataTableModel.addRow(newRow);
+			// add new row button
+			ActionListener addRowBtnAL = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					int nextId = MiscUtils.nextValidId(InputDataCsv.getIds());
+					InputData newRow = new InputData(nextId);
+					InputDataCsv.addId(nextId);
+					inputDataTableModel.addRow(newRow);
 
-				List<int[]> dossierRegChanges = inputDataTableModel.getChanges();
-				saveCsvFile(dossierRegChanges, null);
-			}
-		};
-		addRowBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_add_row"), addRowBtnAL);
+					List<int[]> dossierRegChanges = inputDataTableModel.getChanges();
+					saveCsvFile(dossierRegChanges, null);
+				}
+			};
+			addRowBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_add_row"), addRowBtnAL);
 
-		// save button
-		ActionListener saveBtnAL = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				List<int[]> dossierRegChanges = inputDataTableModel.getChanges();
-				saveCsvFile(dossierRegChanges, null);
+			// save button
+			ActionListener saveBtnAL = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					List<int[]> dossierRegChanges = inputDataTableModel.getChanges();
+					saveCsvFile(dossierRegChanges, null);
 
-				logger.info("File saved!");
-			}
-		};
-		saveBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_save"), saveBtnAL);
+					logger.info("File saved!");
+				}
+			};
+			saveBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_save"), saveBtnAL);
 
-		// delete rows button
-		ActionListener deleteRowsBtnAL = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				List<Integer> rows = inputDataTableModel.getSelectedRows();
-				InputDataCsv.removeIds(rows);
-				inputDataTableModel.removeRows(rows);
+			// delete rows button
+			ActionListener deleteRowsBtnAL = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					List<Integer> rows = inputDataTableModel.getSelectedRows();
+					InputDataCsv.removeIds(rows);
+					inputDataTableModel.removeRows(rows);
 
-				List<int[]> dossierRegChanges = inputDataTableModel.getChanges();
-				saveCsvFile(dossierRegChanges, rows);
-			}
-		};
-		deleteRowsBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_delete_rows"), deleteRowsBtnAL);
+					List<int[]> dossierRegChanges = inputDataTableModel.getChanges();
+					saveCsvFile(dossierRegChanges, rows);
+				}
+			};
+			deleteRowsBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_delete_rows"), deleteRowsBtnAL);
 
-		// track button
-		ActionListener trackBtnAL = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				loaderLabel.setVisible(true);
+			// track button
+			ActionListener trackBtnAL = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					loaderLabel.setVisible(true);
 
-				new SwingWorker<Void, String>() {
-					@Override
-					protected Void doInBackground() throws Exception {
-						List<TrackingResultData> result = TrackingExecutor.track(data);
-						loadTrackingResult(result);
-						tabbedPane.setSelectedIndex(1);
-						return null;
-					}
+					new SwingWorker<Void, String>() {
+						@Override
+						protected Void doInBackground() throws Exception {
+							List<TrackingResultData> result = TrackingExecutor.track(data);
+							loadTrackingResult(result);
+							tabbedPane.setSelectedIndex(1);
+							return null;
+						}
 
-					@Override
-					protected void done() {
-						loaderLabel.setVisible(false);
-					}
-				}.execute();
-			}
-		};
-		trackBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_track"), trackBtnAL);
+						@Override
+						protected void done() {
+							loaderLabel.setVisible(false);
+						}
+					}.execute();
+				}
+			};
+			trackBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_track"), trackBtnAL);
 
-		// export button
-		ActionListener exportBtnAL = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JFileChooser fileChooser = new JFileChooser();
-				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				fileChooser.showSaveDialog(null);
-				String selectedPath = fileChooser.getSelectedFile().getAbsolutePath() + File.separator;
-				logger.info("Selected path: " + selectedPath);
+			// export button
+			ActionListener exportBtnAL = new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					JFileChooser fileChooser = new JFileChooser();
+					fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					fileChooser.showSaveDialog(null);
+					String selectedPath = fileChooser.getSelectedFile().getAbsolutePath() + File.separator;
+					logger.info("Selected path: " + selectedPath);
 
-				File selectedDir = new File(selectedPath);
+					File selectedDir = new File(selectedPath);
 
-				TrackingResultCsv trc = TrackingResultCsv.getInstance();
-				trc.writeCSVfile(trackingResultTableModel, selectedDir);
-			}
-		};
-		exportBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_export"), exportBtnAL);
+					TrackingResultCsv trc = TrackingResultCsv.getInstance();
+					trc.writeCSVfile(trackingResultTableModel, selectedDir);
+				}
+			};
+			exportBtn = MiscUtils.buildButton(localizedLabels.getProperty("btn_export"), exportBtnAL);
 
-		JPanel buttonsPanel = new JPanel();
-		buttonsPanel.add(addRowBtn);
-		buttonsPanel.add(deleteRowsBtn);
-		buttonsPanel.add(saveBtn);
-		buttonsPanel.add(trackBtn);
-		buttonsPanel.add(exportBtn);
-		buttonsPanel.setLayout(new GridLayout());
-		buttonsPanel.setVisible(true);
-		buttonsPanel.setPreferredSize(new Dimension(800, 50));
-		buttonsPanel.setMaximumSize(buttonsPanel.getPreferredSize());
-		add(buttonsPanel);
+			JPanel buttonsPanel = new JPanel();
+			buttonsPanel.add(addRowBtn);
+			buttonsPanel.add(deleteRowsBtn);
+			buttonsPanel.add(saveBtn);
+			buttonsPanel.add(trackBtn);
+			buttonsPanel.add(exportBtn);
+			buttonsPanel.setLayout(new GridLayout());
+			buttonsPanel.setVisible(true);
+			buttonsPanel.setPreferredSize(new Dimension(800, 50));
+			buttonsPanel.setMaximumSize(buttonsPanel.getPreferredSize());
+			add(buttonsPanel);
 
-		setBorder(new EmptyBorder(5, 5, 5, 5));
+			setBorder(new EmptyBorder(5, 5, 5, 5));
 
-		InputDataCsv idc = InputDataCsv.getInstance();
-		File file = new File(settingsUtils.getSetting(SettingsKeys.WORK_DIRECTORY) + File.separator + MiscUtils.SOURCE_FILENAME);
-		data = idc.readCSVfile(file);
-		loadInputDataCsv();
+			InputDataCsv idc = InputDataCsv.getInstance();
+			File file = new File(settingsUtils.getSetting(SettingsKeys.WORK_DIRECTORY) + File.separator + MiscUtils.SOURCE_FILENAME);
+			data = idc.readCSVfile(file);
+			loadInputDataCsv();
+		} else {
+			// TODO
+		}
 	}
 
 	/**

@@ -3,21 +3,28 @@ package it.silco.shiptrack.utils;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -203,6 +210,9 @@ public class MiscUtils {
 					logger.error("Error creating file: " + SOURCE_FILENAME + ". Check working folder!");
 				}
 
+				// TODO
+				requestSerialKey();
+
 				logger.info("Installation complete!");
 			} catch (Exception e2) {
 				logger.error(e2.getMessage());
@@ -212,6 +222,78 @@ public class MiscUtils {
 		logger.info("Installation complete!");
 
 		return props;
+	}
+
+	public static void requestSerialKey() {
+		// request serial key
+		JFrame serialKeyFrame = new JFrame();
+		JPanel serialKeyPanel = new JPanel();
+		serialKeyPanel.setLayout(new BoxLayout(serialKeyPanel, BoxLayout.Y_AXIS));
+
+		JTextField serialKeyInput = new JTextField();
+		serialKeyPanel.add(serialKeyInput);
+
+		JButton serialKeySaveBtn = new JButton();
+		serialKeySaveBtn.setText("SAVE");
+		serialKeySaveBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SettingsUtils su = SettingsUtils.getInstance();
+
+				if (checkSerialKey(serialKeyInput.getText())) {
+					su.addSetting(SettingsKeys.SERIAL_KEY, serialKeyInput.getText());
+					su.saveSettings();
+					serialKeyFrame.dispose();
+				} else {
+					serialKeyInput.setText("Wrong serial key. Try again.");
+				}
+			}
+		});
+		serialKeyPanel.add(serialKeySaveBtn);
+
+		serialKeyFrame.setContentPane(serialKeyPanel);
+		serialKeyFrame.pack();
+		serialKeyFrame.setLocationRelativeTo(null);
+		serialKeyFrame.setAlwaysOnTop (true);
+		serialKeyFrame.setVisible(true);
+	}
+
+	private static boolean checkSerialKey(String encodedSerialKey) {
+		// serial key example plain: ShipTrack;SilCo1990;20-04-2023
+		// serial key example encoded: U2hpcFRyYWNrO1NpbENvMTk5MDsyMC0wNC0yMDIz
+		boolean isSerialValid = true;
+		byte[] decodedBytes = Base64.getDecoder().decode(encodedSerialKey);
+		String decodedSerialKey = new String(decodedBytes);
+
+		String[] serialKeyParts = decodedSerialKey.split(";");
+
+		if (serialKeyParts[0].equals(APP_NAME)) {
+			if (serialKeyParts[1].equals("SilCo1990")) {
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+				try {
+					Date expireDate = sdf.parse(serialKeyParts[2]);
+					if (expireDate.before(new Date())) {
+						// License expired
+						isSerialValid = false;
+					} else {
+						isSerialValid = true;
+					}
+				} catch (ParseException e) {
+					isSerialValid = false;
+				}
+			} else {
+				isSerialValid = false;
+			}
+		} else {
+			isSerialValid = false;
+		}
+		return isSerialValid;
+	}
+
+	public static boolean checkSerialKey() {
+		SettingsUtils su = SettingsUtils.getInstance();
+		String serialKey = su.getSetting(SettingsKeys.SERIAL_KEY);
+		return checkSerialKey(serialKey);
 	}
 
 	public static boolean fileExists(File dir, String fileName) {
