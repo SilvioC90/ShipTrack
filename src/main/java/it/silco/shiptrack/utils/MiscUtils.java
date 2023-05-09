@@ -36,17 +36,26 @@ public class MiscUtils {
 	public final static String SOURCE_FILENAME = "input.csv";
 	private final static String CONFIG_FILE_NAME = "settings.properties";
 
+	private static final String INSTALL_DIR = System.getProperty("user.home") + File.separator + "AppData" + File.separator + "Local" + File.separator + "." + APP_NAME
+			+ File.separator;
+
+	private static String WORK_DIR = System.getProperty("user.home") + File.separator + "." + APP_NAME + File.separator;
+
 	public final static Font FONT = new Font("Arial", Font.PLAIN, 16);
 	public final static Font FONT_BOLD = new Font("Arial", Font.BOLD, 16);
 
 	public final static DateFormat DATE_FORMAT = new SimpleDateFormat("dd/MMM/yyyy HH:mm:ss");
 
+	public static String getInstallationDir() {
+		return INSTALL_DIR;
+	}
+
 	public static String getWorkDir() {
-		return System.getProperty("user.home") + File.separator + "." + APP_NAME + File.separator;
+		return WORK_DIR;
 	}
 
 	public static String getSettingsFilePath() {
-		return getWorkDir() + CONFIG_FILE_NAME;
+		return getInstallationDir() + CONFIG_FILE_NAME;
 	}
 
 	public static String getInputFilePath() {
@@ -158,8 +167,11 @@ public class MiscUtils {
 
 		Properties props;
 
+		if (fileExists(new File(getInstallationDir()), CONFIG_FILE_NAME)) {
+			WORK_DIR = settingsUtils.getSetting(SettingsKeys.WORK_DIRECTORY);
+		}
 		File dir = new File(getWorkDir());
-		boolean check = fileExists(dir, CONFIG_FILE_NAME);
+		boolean check = fileExists(dir, SOURCE_FILENAME);
 
 		if (check) {
 			// software already installed
@@ -167,6 +179,14 @@ public class MiscUtils {
 
 			props = settingsUtils.getSettings();
 		} else {
+			// coping settings file
+			File installationDir = new File(getInstallationDir());
+			if (!installationDir.exists()) {
+				installationDir.mkdir();
+			}
+			settingsUtils.addSetting(SettingsKeys.INSTALLATION_DIRECTORY, installationDir.getPath());
+			settingsUtils.saveSettings();
+
 			props = settingsUtils.getSettings();
 			logger.info("Perfoming installation...");
 
@@ -185,6 +205,7 @@ public class MiscUtils {
 				}
 
 				logger.info("Saving default settings in installation directory: " + selectedPath);
+				WORK_DIR = selectedPath;
 				settingsUtils.addSetting(SettingsKeys.WORK_DIRECTORY, selectedPath);
 				settingsUtils.saveSettings();
 
@@ -208,8 +229,6 @@ public class MiscUtils {
 				logger.error(e2.getMessage());
 			}
 		}
-
-		logger.info("Installation complete!");
 
 		return props;
 	}

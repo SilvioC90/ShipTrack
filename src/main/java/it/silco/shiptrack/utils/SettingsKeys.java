@@ -1,7 +1,7 @@
 package it.silco.shiptrack.utils;
 
 public enum SettingsKeys {
-	WORK_DIRECTORY("workDirectory"), LANGUAGE("language");
+	INSTALLATION_DIRECTORY("installationDirectory"), WORK_DIRECTORY("workDirectory"), LANGUAGE("language");
 
 	private String key;
 
